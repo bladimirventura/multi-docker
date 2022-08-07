@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t bladimir/react-test -f ./client/Dockerfile.dev
+
+script:
+  - docker run -e CI=true bladimir/react-test npm test
+
+after_success:
+  - docker build -t bladimir/multi-client ./client
+  - docker build -t bladimir/multi-server ./server
+  - docker build -t bladimir/multi-worker ./worker
+  - docker build -t bladimir/multi-nginx ./nginx
+  # Log in to the docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push bladimir/multi-client
+  - docker push bladimir/multi-server
+  - docker push bladimir/multi-worker
+  - docker push bladimir/multi-nginx
