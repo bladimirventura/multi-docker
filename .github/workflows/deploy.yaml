@@ -18,8 +18,6 @@ jobs:
       - run: docker build -t bladimirdev/multi-worker ./worker
       - run: docker build -t bladimirdev/multi-nginx ./nginx
 
-      - run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
       - run: docker push bladimirdev/multi-client
       - run: docker push bladimirdev/multi-server
       - run: docker push bladimirdev/multi-worker
